@@ -6,6 +6,7 @@ import App from "./App";
 ReactDOM.render(
   <React.StrictMode>
     <App />
+    {/* <p>Приветы</p> */}
   </React.StrictMode>,
   document.getElementById("root")
 );
