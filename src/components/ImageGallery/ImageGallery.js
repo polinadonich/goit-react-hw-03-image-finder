@@ -22,7 +22,13 @@ function ImageGallery(props) {
 }
 
 ImageGallery.propTypes = {
-  imagePage: PropTypes.arrayOf(PropTypes.shape).isRequired,
+  imagePage: PropTypes.arrayOf(
+    PropTypes.shape({
+      id: PropTypes.number,
+      webformatURL: PropTypes.string,
+      largeImageURL: PropTypes.string,
+    })
+  ).isRequired,
   onOpenModal: PropTypes.func.isRequired,
 };
 

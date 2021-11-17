@@ -21,10 +21,10 @@ class App extends Component {
   };
 
   componentDidMount() {
-    this.setState({ loading: true });
-    const page = this.state.page;
-    const searchQuery = this.state.searchQuery;
-    this.fetchFirstImagePage(searchQuery, page);
+    // this.setState({ loading: true });
+    // const page = this.state.page;
+    // const searchQuery = this.state.searchQuery;
+    // this.fetchFirstImagePage(searchQuery, page);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -33,9 +33,12 @@ class App extends Component {
 
     if (prevState.searchQuery !== searchQuery) {
       this.setState({ loading: true });
+      this.setState({ page: 1 });
+      this.setState({ imagePage: [] });
       this.fetchFirstImagePage(searchQuery, page);
     }
-    if (prevState.page !== page) {
+    if (prevState.page !== page && page !== 1) {
+      this.setState({ loading: true });
       this.fetchNextImagePages(searchQuery, page);
     }
 
@@ -57,13 +60,17 @@ class App extends Component {
     const images = hits.map(({ id, webformatURL, largeImageURL }) => {
       return { id, webformatURL, largeImageURL };
     });
+    this.setState({ loading: false });
     this.setState((prevState) => ({
       imagePage: [...prevState.imagePage, ...images],
     }));
   }
 
-  async fetchFirstImagePage(searchQuery, page) {
-    const { hits, total } = await fetchImages(searchQuery, page);
+  async fetchFirstImagePage(searchQuery) {
+    if (!searchQuery) {
+      return;
+    }
+    const { hits, total } = await fetchImages(searchQuery, 1);
     const images = hits.map(({ id, webformatURL, largeImageURL }) => {
       return { id, webformatURL, largeImageURL };
     });
@@ -90,11 +97,13 @@ class App extends Component {
     return (
       <div className={s.App}>
         <Searchbar onSubmit={this.formSubmitHandler} />
-        <ImageGallery
-          searchQuery={searchQuery}
-          imagePage={imagePage}
-          onOpenModal={this.toggleModal}
-        />
+        {imagePage.length !== 0 && (
+          <ImageGallery
+            searchQuery={searchQuery}
+            imagePage={imagePage}
+            onOpenModal={this.toggleModal}
+          />
+        )}
         {loading && <Loader />}
         {total > 0 && <Button onClick={this.handleClickMoreImages} />}
         {!loading && total === 0 && (

@@ -1,11 +1,16 @@
 import { Component } from "react";
 import { toast } from "react-toastify";
 import s from "./Searchbar.module.css";
-import SearchForm from "../SearchForm";
+import PropTypes from "prop-types";
+// import SearchForm from "../SearchForm";
 
 class Searchbar extends Component {
   state = {
     searchQuery: "",
+  };
+
+  static defaultProps = {
+    onSubmit: PropTypes.func.isRequired,
   };
 
   handleSearchQuery = (e) => {
@@ -25,11 +30,26 @@ class Searchbar extends Component {
     const { searchQuery } = this.state;
     return (
       <header className={s.Searchbar}>
-        <SearchForm
+        <form className={s.SearchForm} onSubmit={this.handleSubmit}>
+          <button type="submit" className={s.SearchFormButton}>
+            <span className={s.SearchFormButtonLabel}>Search</span>
+          </button>
+
+          <input
+            className={s.SearchFormInput}
+            type="text"
+            autoComplete="off"
+            autoFocus
+            onChange={this.handleSearchQuery}
+            value={searchQuery}
+            placeholder="Search images and photos"
+          />
+        </form>
+        {/* <SearchForm
           onSubmit={this.handleSubmit}
           onChange={this.handleSearchQuery}
           value={searchQuery}
-        />
+        /> */}
       </header>
     );
   }
